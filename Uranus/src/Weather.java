@@ -2,11 +2,15 @@ import java.io.*;
 import org.json.*;
 import java.net.*;
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
 
 
 public class Weather {
     String latitude;
     String longitude;
+    String city;
+    String state;
+
 
     Weather(String lat, String longt) {
 
@@ -20,16 +24,24 @@ public class Weather {
             // Gets link to weather forecast for the area
             String forecastURL = prop.getString("forecast");
 
+            //System.out.println(json);
 
             String json2 = fetchURL(forecastURL);
+            //System.out.print(json2);
+
             JSONObject weaFore = new JSONObject(json2);
             JSONObject prop2 = weaFore.getJSONObject("properties");
             JSONArray periods = new JSONArray(prop2.getJSONArray("periods"));
 
             for (int i = 0; i < periods.length(); i++) {
                 JSONObject day = periods.getJSONObject(i);
-                System.out.println(day.getString("name") + ": " + day.getString("shortForecast") + "\n");
+                String dayName = day.getString("name");
+                if (dayName.contains("Night")) {
+                    System.out.println(day.getString("name") + ": " + day.getString("shortForecast") + "\n");
+                    LocalDateTime dateTime = LocalDateTime.parse(day.getString("startTime").substring(0,19));
+                }
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();
