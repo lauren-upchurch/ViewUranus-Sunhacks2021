@@ -3,16 +3,64 @@ import org.json.*;
 import java.net.*;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
-
-public class Weather {
+/**
+ * Missing error handling other than printing stack trace. Should probably include error handling for different web
+ * responses
+ */
+public class LocationWeather {
+    Double lat;
+    Double lng;
     String latitude;
     String longitude;
-    String city;
-    String state;
+    String location;
+
+    ArrayList<ForecastData> forecasts;
+
+    LocationWeather() {
+        lat = null;
+        lng = null;
+        latitude = null;
+        longitude = null;
+        location = null;
+        forecasts = null;
+    }
+
+    /**
+     * This should probably be named something else....
+     * @param inputLocation
+     */
+    LocationWeather(String inputLocation){
+        this.location = inputLocation;
+
+        try {
+            String json = fetchURL("https://open.mapquestapi.com/geocoding/v1/address?key=9YVYmgCgouBGEFHNQJ1ZjQGXunMNgAyA&location=" + location);
+            JSONObject jLocationResults = new JSONObject(json);
+            JSONArray jLocArr = new JSONArray(jLocationResults.getJSONArray("results"));
+
+            JSONObject results = jLocArr.getJSONObject(0);
+            JSONArray arr = results.getJSONArray("locations");
+            JSONObject locations = arr.getJSONObject(0);
+            JSONObject latlng = locations.getJSONObject("displayLatLng");
+            this.lat = latlng.getDouble("lat");
+            this.lng = latlng.getDouble("lng");
+
+            locationToWeather(lat.toString(), lng.toString());
+
+            //System.out.println(lat + " " + lng);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
-    Weather(String lat, String longt) {
+    public ArrayList<ForecastData> locationToWeather(String lat, String longt) {
+        this.latitude = lat;
+        this.longitude = longt;
+        forecasts = new ArrayList<>();
 
         try {
             String json = fetchURL("https://api.weather.gov/points/" + lat + "," + longt);
@@ -36,27 +84,48 @@ public class Weather {
             for (int i = 0; i < periods.length(); i++) {
                 JSONObject day = periods.getJSONObject(i);
                 String dayName = day.getString("name");
+
                 if (dayName.contains("Night")) {
-                    System.out.println(day.getString("name") + ": " + day.getString("shortForecast") + "\n");
+                    String dayForecast = day.getString("shortForecast");
+                    //System.out.println(day.getString("name") + ": " + dayForecast + "\n");
                     LocalDateTime dateTime = LocalDateTime.parse(day.getString("startTime").substring(0,19));
+                    ForecastData data = new ForecastData(dateTime, dayName, dayForecast);
+                    forecasts.add(data);
                 }
             }
 
+            for(ForecastData forecastData : forecasts) {
+                System.out.println(forecastData.toString());
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return forecasts;
     }
 
+
+    public ArrayList<ForecastData> getForecasts() {
+        return forecasts;
+    }
+
+
+    // Pretty much only here so I can run this in my IDE
     public static void main(String args[]){
 
         // sample data using Austin
         String lat = "30.2672";
         String longi = "-97.7431";
-        Weather wea = new Weather(lat, longi);
+        LocationWeather wea = new LocationWeather("Austin,TX");
 
     }
 
+
+    /**
+     * Straight out of Dr. Mehlhase's sample code for 321
+     * @param aUrl
+     * @return
+     */
     public static String fetchURL(final String aUrl) {
         final StringBuilder sb = new StringBuilder();
         URLConnection conn = null;
