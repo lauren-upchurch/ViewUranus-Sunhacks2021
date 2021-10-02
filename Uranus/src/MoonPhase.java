@@ -133,13 +133,13 @@ public class MoonPhase {
         }
         return str;
     }
-    /*
+/*
     public static void main(String args[]) {
         MoonPhase next = new MoonPhase();
         System.out.println("Next New Moon is " + next.calculateNextNewMoon().toString());
         System.out.println("Stargazing is good between days: " + next.starGazingRange().toString());
         System.out.println("Stargazing is good between days: " + next.starGazingRange().toString());
-        System.out.println(next.phaseToString(next.whatPhaseIsIt(next.currentDate.plusDays(4))));
+        System.out.println(next.phaseToString(next.whatPhaseIsIt(next.currentDate.plusDays(10))));
    }
 */
     public enum Phase {
