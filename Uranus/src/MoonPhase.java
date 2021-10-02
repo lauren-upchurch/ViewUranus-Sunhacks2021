@@ -1,3 +1,5 @@
+package src;
+
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
@@ -58,9 +60,9 @@ public class MoonPhase {
         return dates;
     }
 
-    public static void main(String args[]) {
-        MoonPhase next = new MoonPhase();
-        System.out.println("Next New Moon is " + next.calculateNextNewMoon().toString());
-        System.out.println("Stargazing is good between days: " + next.starGazingRange().toString());
-    }
+//    public static void main(String args[]) {
+//        MoonPhase next = new MoonPhase();
+//        System.out.println("Next New Moon is " + next.calculateNextNewMoon().toString());
+//        System.out.println("Stargazing is good between days: " + next.starGazingRange().toString());
+//    }
 }

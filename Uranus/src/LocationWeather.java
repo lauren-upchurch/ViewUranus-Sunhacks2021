@@ -1,3 +1,5 @@
+package src;
+
 import java.io.*;
 import org.json.*;
 import java.net.*;
@@ -110,15 +112,15 @@ public class LocationWeather {
     }
 
 
-    // Pretty much only here so I can run this in my IDE
-    public static void main(String args[]){
-
-        // sample data using Austin
-        String lat = "30.2672";
-        String longi = "-97.7431";
-        LocationWeather wea = new LocationWeather("Austin,TX");
-
-    }
+//    // Pretty much only here so I can run this in my IDE
+//    public static void main(String args[]){
+//
+//        // sample data using Austin
+//        String lat = "30.2672";
+//        String longi = "-97.7431";
+//        LocationWeather wea = new LocationWeather("Austin,TX");
+//
+//    }
 
 
     /**
