@@ -1,4 +1,4 @@
-package src;
+
 
 /**
  * Main class that launches the app and hosts the core GUI elements.
@@ -57,6 +57,7 @@ public class Main extends Application {
         VBox forecastLabelBox = new VBox(); // This is just a placeholder for now
 
         // Create text field
+
         TextField locationField = new TextField("Enter your location: 'City,State'");
         locationField.setFont(Font.font("Helvetica", FontWeight.THIN, 14));
         locationField.setPrefColumnCount(40);
