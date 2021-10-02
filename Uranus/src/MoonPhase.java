@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 //import java.util.TimeZone;
 
 
@@ -44,8 +45,22 @@ public class MoonPhase {
         int indexOfDecimal = doubleAsString.indexOf(".");
         return Double.parseDouble(doubleAsString.substring(indexOfDecimal));
     }
+
+    private ArrayList<LocalDate> starGazingRange() {
+        ArrayList<LocalDate> dates = new ArrayList<>();
+        LocalDate newMoon = calculateNextNewMoon();
+        if(newMoon.minusDays(4).isBefore(currentDate)) {
+            dates.add(currentDate);
+        } else {
+            dates.add(newMoon.minusDays(4));
+        }
+        dates.add(newMoon.plusDays(4));
+        return dates;
+    }
+
     public static void main(String args[]) {
         MoonPhase next = new MoonPhase();
         System.out.println("Next New Moon is " + next.calculateNextNewMoon().toString());
+        System.out.println("Stargazing is good between days: " + next.starGazingRange().toString());
     }
 }
