@@ -193,7 +193,7 @@ public class Main extends Application {
 
         // Adding nodes to right-hand panel
         splitPane.getItems().addAll(leftPane, rightPaneVerticalSplit);
-        splitPane.setDividerPositions(0.4f, 0.6f);
+        splitPane.setDividerPositions(0.3f, 0.7f);
 
         // Setting up the scene
         welcomeScene = new Scene(splitPane, 800, 800);
