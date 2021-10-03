@@ -43,7 +43,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 //        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-
         setUpStartScreen();
 
         primaryStage.setScene(welcomeScene);
@@ -117,7 +116,6 @@ public class Main extends Application {
      * @return Pane object that contains all leftpane sections
      */
     private VBox setUpLeftPane() {
-
         String logoImageString = "Uranus/images/logo/view-uranus-logo2.png";
         ImageView logoImageView = new ImageView();
         logoImageView.setStyle("-fx-alignment: CENTER;");
@@ -133,7 +131,7 @@ public class Main extends Application {
 
         StackPane logoPane = new StackPane(logoImageView);
         logoPane.setAlignment(Pos.BASELINE_CENTER);
-        
+
         // Create text field
         TextField locationField = new TextField("City, State");
         locationField.setFont(Font.font("Helvetica", FontWeight.THIN, 14));
@@ -162,7 +160,11 @@ public class Main extends Application {
             for (int i = 0; i < 5; i++) {
                 if (forecasts.get(i) != null) {
                     LocalDateTime date = forecasts.get(i).date;
-                    DayLabel dayLabel = new DayLabel(forecasts.get(i).date);
+
+                    Stargazing stargazer = new Stargazing(forecasts.get(i));
+                    Stargazing.Gaze visibility = stargazer.starGazingPotential();
+
+                    DayLabel dayLabel = new DayLabel(forecasts.get(i).date, visibility);
 
                     MoonPhase.Phase moonPhase = MoonPhase.whatPhaseIsIt(date);
                     String phaseString = moonPhaseCalculator.phaseToString(moonPhase);
