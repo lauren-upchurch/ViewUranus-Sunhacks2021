@@ -1,4 +1,4 @@
-
+package src;
 
 /**
  * Main class that launches the app and hosts the core GUI elements.
@@ -21,6 +21,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import ui.DayLabel;
 
 import java.util.ArrayList;
 
@@ -54,11 +55,13 @@ public class Main extends Application {
      */
     private void setUpStartScreen(){
         SplitPane splitPane = new SplitPane();
-        VBox forecastLabelBox = new VBox(); // This is just a placeholder for now
+        GridPane forecastGrid = new GridPane();
+        forecastGrid.setAlignment(Pos.CENTER);
+        forecastGrid.setVgap(20);
+        forecastGrid.setHgap(20);
 
         // Create text field
-
-        TextField locationField = new TextField("Enter your location: 'City,State'");
+        TextField locationField = new TextField("City, State");
         locationField.setFont(Font.font("Helvetica", FontWeight.THIN, 14));
         locationField.setPrefColumnCount(40);
         locationField.setMaxWidth(250);
@@ -85,9 +88,8 @@ public class Main extends Application {
         ///////////////////////////////////////////////////////////////////////////////////////////
 
         checkVisibilityButton.setOnMouseClicked(e -> {
-
             // Empty out right-hand panel and get location entry from textfield
-            forecastLabelBox.getChildren().clear();
+            forecastGrid.getChildren().clear();
             String location = locationField.getText();
 
             // Gets weather information for hte given location
@@ -95,15 +97,15 @@ public class Main extends Application {
 
             // Formatting weather condition (NOTE: This is mostly for debugging. Will update with
             // visual representation of which days are optimal for viewing Uranus
-            Label locationLabel = new Label("View Uranus in " + location);
+            Label locationLabel = new Label("Visibility forecast for " + location);
             locationLabel.setFont(Font.font("Helvetica", FontWeight.MEDIUM, 15));
-            VBox.setMargin(locationLabel, new Insets(20, 0, 0, 0));
-            forecastLabelBox.getChildren().add(locationLabel);
+            locationLabel.setAlignment(Pos.CENTER);
 
-            for (int i = 0; i < 4; i++) {
+
+            for (int i = 0; i < 5; i++) {
                 if (forecasts.get(i) != null) {
-                    Label dayLabel = new Label(forecasts.get(i).toString());
-                    forecastLabelBox.getChildren().add(dayLabel);
+                    DayLabel dayLabel = new DayLabel(forecasts.get(i).date);
+                    forecastGrid.add(dayLabel, i, 0);
                 }
             }
         });
@@ -123,10 +125,10 @@ public class Main extends Application {
         rightPaneVerticalSplit.setDividerPositions(0.3f, 0.7f);
 
         // Create top and bottom panes for right-hand panel
-        Pane topPane = new Pane(new Label("Recommended days will go in this pane"));
-        topPane.getChildren().add(forecastLabelBox);
+//        Pane topPane = new Pane();
+//        topPane.getChildren().add(forecastGrid);
         Pane bottomPane = new Pane(new Label("Potentially visible bodies will go in this one"));
-        rightPaneVerticalSplit.getItems().addAll(topPane, bottomPane);
+        rightPaneVerticalSplit.getItems().addAll(forecastGrid, bottomPane);
 
         // Adding nodes to right-hand panel
         splitPane.getItems().addAll(leftPane, rightPaneVerticalSplit);
