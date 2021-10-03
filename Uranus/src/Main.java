@@ -21,6 +21,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import ui.DayLabel;
+import ui.WeatherPane;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,13 +32,13 @@ public class Main extends Application {
 
     private LocationWeather weather;
     private ArrayList<ForecastData> forecasts;
-    private Scene welcomeScene;
     private MoonPhase moonPhaseCalculator = new MoonPhase();
+    private Scene welcomeScene;
+    private GridPane forecastGrid = new GridPane();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
 //        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-
         setUpStartScreen();
 
         primaryStage.setScene(welcomeScene);
@@ -107,14 +108,25 @@ public class Main extends Application {
     }
 
     /**
-     * Helper method that sets up the StartScreen (NOTE: button functionality is included in this).
+     * Helper method for setting up lefthand pane.
+     * @return Pane object that contains all leftpane sections
      */
-    private void setUpStartScreen(){
-        SplitPane splitPane = new SplitPane();
-        GridPane forecastGrid = new GridPane();
-        forecastGrid.setAlignment(Pos.CENTER);
-        forecastGrid.setVgap(20);
-        forecastGrid.setHgap(20);
+    private VBox setUpLeftPane() {
+        String logoImageString = "Uranus/images/logo/view-uranus-logo2.png";
+        ImageView logoImageView = new ImageView();
+        logoImageView.setStyle("-fx-alignment: CENTER;");
+
+        try {
+            Image logo = new Image(new FileInputStream(logoImageString));
+            logoImageView.setImage(logo);
+            logoImageView.setFitHeight(140);
+            logoImageView.setPreserveRatio(true);
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        StackPane logoPane = new StackPane(logoImageView);
+        logoPane.setAlignment(Pos.BASELINE_CENTER);
 
         // Create text field
         TextField locationField = new TextField("City, State");
@@ -122,23 +134,15 @@ public class Main extends Application {
         locationField.setPrefColumnCount(40);
         locationField.setMaxWidth(250);
 
-        // Create content labels
-        Label topLabel = new Label("View Uranus");
-        topLabel.setFont(Font.font("Helvetica", FontWeight.EXTRA_LIGHT, 25));
-        topLabel.setTextFill(Color.WHITESMOKE);
-
-        Label subLabel = new Label("(or other stellar phenomena)");
-        subLabel.setFont(Font.font("Helvetica", FontWeight.THIN, 12));
-        subLabel.setTextFill(Color.WHITESMOKE);
-
         // Create button for sending textfield data to backend
         Button checkVisibilityButton = new Button("Check visibility");
         checkVisibilityButton.setFont(Font.font("Helvetica", FontWeight.THIN, 16));
         checkVisibilityButton.setBackground(new Background(
                 new BackgroundFill(Color.ALICEBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 
+        // Setting button functionality
         checkVisibilityButton.setOnMouseClicked(e -> {
-            // Empty out right-hand panel and get location entry from textfield
+            // Empty  right-hand panel and get location entry from textfield
             forecastGrid.getChildren().clear();
             String location = locationField.getText();
 
@@ -152,48 +156,67 @@ public class Main extends Application {
             for (int i = 0; i < 5; i++) {
                 if (forecasts.get(i) != null) {
                     LocalDateTime date = forecasts.get(i).date;
-                    DayLabel dayLabel = new DayLabel(forecasts.get(i).date);
+
+                    Stargazing stargazer = new Stargazing(forecasts.get(i));
+                    Stargazing.Gaze visibility = stargazer.starGazingPotential();
+
+                    DayLabel dayLabel = new DayLabel(forecasts.get(i).date, visibility);
 
                     MoonPhase.Phase moonPhase = MoonPhase.whatPhaseIsIt(date);
                     String phaseString = moonPhaseCalculator.phaseToString(moonPhase);
                     Pane moonPhasePane = getMoonPhasePane(moonPhase);
 
+                    WeatherPane weatherPane = new WeatherPane(forecasts.get(i).forecast);
+
                     forecastGrid.add(moonPhasePane, i,0);
                     forecastGrid.add(dayLabel, i, 1);
+                    forecastGrid.add(weatherPane, i, 2);
                 }
             }
         });
 
         // Create VBox and layout parameters for storing GUI elements in left-hand panel
-        VBox leftPane = new VBox(5, topLabel, subLabel, locationField, checkVisibilityButton);
-        VBox.setMargin(topLabel, new Insets(30,0,0,0));
+        VBox leftVBox = new VBox(5, logoPane, locationField, checkVisibilityButton);
+        VBox.setMargin(logoPane, new Insets(20,0,0,0));
         VBox.setMargin(checkVisibilityButton, new Insets(15, 0, 0, 0));
         VBox.setVgrow(locationField, Priority.NEVER);
-        leftPane.setAlignment(Pos.BASELINE_CENTER);
-        leftPane.setBackground(new Background(
+        leftVBox.setAlignment(Pos.BASELINE_CENTER);
+
+        leftVBox.setBackground(new Background(
                 new BackgroundFill(Color.rgb(23, 59, 95), CornerRadii.EMPTY, Insets.EMPTY)));
 
-        // Create vertical split pane for right-hand panel
-        SplitPane rightPaneVerticalSplit = new SplitPane();
-        rightPaneVerticalSplit.setOrientation(Orientation.VERTICAL);
-        rightPaneVerticalSplit.setDividerPositions(0.3f, 0.7f);
+        return leftVBox;
+    }
 
-        // Create top and bottom panes for right-hand panel
-//        Pane topPane = new Pane();
-//        topPane.getChildren().add(forecastGrid);
+    /**
+     * Helper method that sets up the StartScreen (NOTE: button functionality is included in this).
+     */
+    private void setUpStartScreen(){
+        SplitPane splitPane = new SplitPane();
+
+        // Create forecast grid for weather/moon info in top-right corner
+        forecastGrid.setAlignment(Pos.CENTER);
+        forecastGrid.setVgap(20);
+        forecastGrid.setHgap(20);
+
+        // Set up left-hand pane
+        VBox leftPane = setUpLeftPane();
+
+        // Set up right-hand pane
+        SplitPane rightPane = new SplitPane();
+        rightPane.setOrientation(Orientation.VERTICAL);
+        rightPane.setDividerPositions(0.3f, 0.7f);
 
         Label uLabel = new Label("Ephemeris for Uranus");
         uLabel.setFont(Font.font("Helvetica", FontWeight.BOLD, 12));
         UranusTable data = new UranusTable();
         Pane bottomPane = new Pane(data.getTable());
 
-
-
-        rightPaneVerticalSplit.getItems().addAll(forecastGrid, bottomPane);
+        rightPane.getItems().addAll(forecastGrid, bottomPane);
 
         // Adding nodes to right-hand panel
-        splitPane.getItems().addAll(leftPane, rightPaneVerticalSplit);
-        splitPane.setDividerPositions(0.3f, 0.7f);
+        splitPane.getItems().addAll(leftPane, rightPane);
+        splitPane.setDividerPositions(0.4f, 0.6f);
 
         // Setting up the scene
         welcomeScene = new Scene(splitPane, 800, 800);
