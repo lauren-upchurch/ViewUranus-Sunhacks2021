@@ -31,12 +31,12 @@ public class WeatherPane extends Pane {
 
         if (weatherForecast.contains("Clear")) {
             imageString = "Clear.png";
-        } else if (weatherForecast.contains("Cloudy")) {
-            imageString = "Cloudy.png";
         } else if (weatherForecast.contains("Cloudy") && weatherForecast.contains("Snow")) {
             imageString = "CloudySnow.png";
         } else if (weatherForecast.contains("Partly") && weatherForecast.contains("Cloudy")) {
             imageString = "PartlyCloudy.png";
+        } else if (weatherForecast.contains("Cloudy")) {
+            imageString = "Cloudy.png";
         } else if (weatherForecast.contains("Rain")) {
             imageString = "Rain.png";
         } else if (weatherForecast.contains("Snow")) {
@@ -47,7 +47,7 @@ public class WeatherPane extends Pane {
             imageString = "BrokenWeather.png";
         }
 
-        imageString = "Uranus/images/waather/" + imageString;
+        imageString = "Uranus/images/weather/" + imageString;
 
         return imageString;
     }
