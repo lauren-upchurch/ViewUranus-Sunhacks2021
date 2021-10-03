@@ -37,13 +37,13 @@ public class UranusTable extends GridPane {
         VBox[] columnTitles = createColumnTitles();
         this.setHgap(15);
         this.setVgap(10);
-//        this.setGridLinesVisible(true);
 
         // Add column titles to the grid
         for (int i = 0; i < NUM_COLUMNS; i++) {
             this.add(columnTitles[i], i, 0);
         }
 
+        // Insert all formatted data into the grid
         insertCleanedData();
     }
 
@@ -169,7 +169,7 @@ public class UranusTable extends GridPane {
         int count = 0;
         for (String i : input) {
             i = i.trim();
-            System.out.println(count + " " + i);
+//            System.out.println(count + " " + i);
             count++;
         }
 
@@ -186,7 +186,6 @@ public class UranusTable extends GridPane {
             if (counter == 10) {
                 counter = 0; // Reset counter for each Uranusling
                 cleanedData.add(newUranusling);
-                System.out.println("New Uranusling added");
             }
 
             if (counter == 0) newUranusling = new Uranusling();
