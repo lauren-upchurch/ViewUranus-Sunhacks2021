@@ -1,9 +1,11 @@
+package src;
+
 import java.time.LocalDate;
 
 public class Stargazing {
-private ForecastData forecast;
-private MoonPhase.Phase phase;
-private Gaze gaze;
+    private ForecastData forecast;
+    private MoonPhase.Phase phase;
+    private Gaze gaze;
 
 public Stargazing(ForecastData forecast) {
     this.forecast = forecast;

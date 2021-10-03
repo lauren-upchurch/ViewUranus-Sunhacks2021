@@ -26,7 +26,7 @@ public class DayLabel extends Pane {
     private DayLabel(){};
 
     public DayLabel(LocalDateTime date) {
-//        this.dayName = dayName;
+        super();
         this.date = date;
 
         initPane();

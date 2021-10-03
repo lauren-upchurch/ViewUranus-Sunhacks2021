@@ -15,6 +15,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -23,6 +25,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import ui.DayLabel;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Main extends Application {
@@ -30,6 +36,7 @@ public class Main extends Application {
     private LocationWeather weather;
     private ArrayList<ForecastData> forecasts;
     private Scene welcomeScene;
+    private MoonPhase moonPhaseCalculator = new MoonPhase();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -48,6 +55,59 @@ public class Main extends Application {
     private void getWeather(String city) {
         weather = new LocationWeather(city);
         forecasts = weather.getForecasts();
+    }
+
+    private Pane getMoonPhasePane(MoonPhase.Phase phase){
+        String imageString;
+
+        switch (phase) {
+            case NEW_MOON:
+                imageString = "NewMoon.png";
+                break;
+            case THIRD_QUARTER:
+                imageString = "ThirdQuarter.png";
+                break;
+            case FULL_MOON:
+                imageString = "FullMoon.png";
+                break;
+            case FIRST_QUARTER:
+                imageString = "FirstQuarter.png";
+                break;
+            case WANING_CRESCENT:
+                imageString = "WaningCrescent.png";
+                break;
+            case WANING_GIBBOUS:
+                imageString = "WaningGibbous.png";
+                break;
+            case WAXING_GIBBOUS:
+                imageString = "WaxingGibbous.png";
+                break;
+            case WAXING_CRESCENT:
+                imageString = "WaxingCrescent.png";
+                break;
+            default:
+                imageString = "Oops.png";
+        }
+
+        imageString = "Uranus/images/moon_phases/" + imageString;
+        ImageView moonPhaseImage = getMoonPhaseImage(imageString);
+
+        return new Pane(moonPhaseImage);
+    }
+
+    private ImageView getMoonPhaseImage(String imageSource) {
+        ImageView moonImageView = new ImageView();
+
+        try {
+            Image moonPhaseImage = new Image(new FileInputStream(imageSource));
+            moonImageView.setImage(moonPhaseImage);
+            moonImageView.setFitHeight(40);
+            moonImageView.setPreserveRatio(true);
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        return moonImageView;
     }
 
     /**
@@ -69,23 +129,17 @@ public class Main extends Application {
         // Create content labels
         Label topLabel = new Label("View Uranus");
         topLabel.setFont(Font.font("Helvetica", FontWeight.EXTRA_LIGHT, 25));
+        topLabel.setTextFill(Color.WHITESMOKE);
 
         Label subLabel = new Label("(or other stellar phenomena)");
         subLabel.setFont(Font.font("Helvetica", FontWeight.THIN, 12));
+        subLabel.setTextFill(Color.WHITESMOKE);
 
         // Create button for sending textfield data to backend
         Button checkVisibilityButton = new Button("Check visibility");
         checkVisibilityButton.setFont(Font.font("Helvetica", FontWeight.THIN, 16));
         checkVisibilityButton.setBackground(new Background(
                 new BackgroundFill(Color.ALICEBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        // NOTE TO LAUREN AND GRANT:
-        // BELOW IS WHERE THE BUTTON CLICK IS HANDLED. RIGHT NOW IT JUST PULLS THE WEATHER DATA
-        // AND PRINTS IT OUT TO THE RIGHT-HAND PANEL. THIS WOULD BE A GOOD PLACE TO MAKE A CALL
-        // TO SOME SORT OF CONTROLLER THAT COLLATES ALL RELEVANT DATA, THEN I CAN HAVE THE INTERFACE
-        // PRESENT IT ACCORDINGLY.
-        ///////////////////////////////////////////////////////////////////////////////////////////
 
         checkVisibilityButton.setOnMouseClicked(e -> {
             // Empty out right-hand panel and get location entry from textfield
@@ -95,17 +149,21 @@ public class Main extends Application {
             // Gets weather information for hte given location
             getWeather(location);
 
-            // Formatting weather condition (NOTE: This is mostly for debugging. Will update with
-            // visual representation of which days are optimal for viewing Uranus
             Label locationLabel = new Label("Visibility forecast for " + location);
             locationLabel.setFont(Font.font("Helvetica", FontWeight.MEDIUM, 15));
             locationLabel.setAlignment(Pos.CENTER);
 
-
             for (int i = 0; i < 5; i++) {
                 if (forecasts.get(i) != null) {
+                    LocalDateTime date = forecasts.get(i).date;
                     DayLabel dayLabel = new DayLabel(forecasts.get(i).date);
-                    forecastGrid.add(dayLabel, i, 0);
+
+                    MoonPhase.Phase moonPhase = MoonPhase.whatPhaseIsIt(date);
+                    String phaseString = moonPhaseCalculator.phaseToString(moonPhase);
+                    Pane moonPhasePane = getMoonPhasePane(moonPhase);
+
+                    forecastGrid.add(moonPhasePane, i,0);
+                    forecastGrid.add(dayLabel, i, 1);
                 }
             }
         });
@@ -117,7 +175,7 @@ public class Main extends Application {
         VBox.setVgrow(locationField, Priority.NEVER);
         leftPane.setAlignment(Pos.BASELINE_CENTER);
         leftPane.setBackground(new Background(
-                new BackgroundFill(Color.LIGHTSTEELBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+                new BackgroundFill(Color.rgb(23, 59, 95), CornerRadii.EMPTY, Insets.EMPTY)));
 
         // Create vertical split pane for right-hand panel
         SplitPane rightPaneVerticalSplit = new SplitPane();

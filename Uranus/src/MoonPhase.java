@@ -1,3 +1,5 @@
+package src;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -136,14 +138,14 @@ public class MoonPhase {
         return str;
     }
 
-    public static void main(String args[]) {
-        MoonPhase next = new MoonPhase();
-        System.out.println("Next New Moon is " + next.calculateNextNewMoon().toString());
-        System.out.println("Stargazing is good between days: " + next.starGazingRange().toString());
-        System.out.println("Stargazing is good between days: " + next.starGazingRange().toString());
-        System.out.println(next.phaseToString(next.whatPhaseIsIt(next.currentDate.plusDays(33))));
-        System.out.println(next.currentDate.plusDays(33));
-   }
+//    public static void main(String args[]) {
+//        MoonPhase next = new MoonPhase();
+//        System.out.println("Next New Moon is " + next.calculateNextNewMoon().toString());
+//        System.out.println("Stargazing is good between days: " + next.starGazingRange().toString());
+//        System.out.println("Stargazing is good between days: " + next.starGazingRange().toString());
+//        System.out.println(next.phaseToString(next.whatPhaseIsIt(next.currentDate.plusDays(33))));
+//        System.out.println(next.currentDate.plusDays(33));
+//   }
 
     public enum Phase {
         NEW_MOON,
