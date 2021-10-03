@@ -1,23 +1,25 @@
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.ArrayList;
 
 
 public class MoonPhase {
-    private final LocalDate currentDate;
+    private final LocalDateTime currentDate;
     private final int currentDay;
     private final Month currentMonth;
     private final int currentYear;
     private final LocalDate newMoon = LocalDate.of(2000, Month.JANUARY, 6);
 
     public MoonPhase() {
-        this.currentDate = LocalDate.now();
+        this.currentDate = LocalDateTime.now();
         this.currentDay = currentDate.getDayOfMonth();
         this.currentMonth = currentDate.getMonth();
         this.currentYear = currentDate.getYear();
     }
 
-    private LocalDate calculateNextNewMoon() {
+    private LocalDateTime calculateNextNewMoon() {
         int month =  currentMonth.getValue();
         int year = currentYear;
         if(month <= 2) {
@@ -39,7 +41,7 @@ public class MoonPhase {
         return currentDate.plusDays((long) nextNewMoon + 1);
     }
 
-    private LocalDate calculateNextNewMoonFromDate(LocalDate day) {
+    private static LocalDateTime calculateNextNewMoonFromDate(LocalDateTime day) {
         int month =  day.getMonth().getValue();
         int year = day.getYear();
         if(month <= 2) {
@@ -58,18 +60,18 @@ public class MoonPhase {
         //double lastNewMoon = Math.ceil(getDecimal(newMoons));
         double lastNewMoon = getDecimal(newMoons) * 29.53;
         double nextNewMoon = 29.5 - lastNewMoon;
-        return day.plusDays((long) nextNewMoon + 1);
+        return day.plusDays((long) ((long) nextNewMoon + .75));
     }
 
-    private double getDecimal(double doubleNumber) {
+    private static double getDecimal(double doubleNumber) {
         String doubleAsString = String.valueOf(doubleNumber);
         int indexOfDecimal = doubleAsString.indexOf(".");
         return Double.parseDouble(doubleAsString.substring(indexOfDecimal));
     }
 
-    private ArrayList<LocalDate> starGazingRange() {
-        ArrayList<LocalDate> dates = new ArrayList<>();
-        LocalDate newMoon = calculateNextNewMoon();
+    private ArrayList<LocalDateTime> starGazingRange() {
+        ArrayList<LocalDateTime> dates = new ArrayList<>();
+        LocalDateTime newMoon = calculateNextNewMoon();
         if(newMoon.minusDays(4).isBefore(currentDate)) {
             dates.add(currentDate);
         } else {
@@ -79,29 +81,29 @@ public class MoonPhase {
         return dates;
     }
     
-    private Phase whatPhaseIsIt(LocalDate day) {
-        LocalDate nextNewMoonFromDay = calculateNextNewMoonFromDate(day);
+    public static Phase whatPhaseIsIt(LocalDateTime day) {
+        LocalDateTime nextNewMoonFromDay = calculateNextNewMoonFromDate(day);
         Phase phase = Phase.NEW_MOON;
-        if (day.isEqual(nextNewMoonFromDay)) {
+        if (day.isEqual(ChronoLocalDateTime.from(nextNewMoonFromDay))) {
             phase = Phase.NEW_MOON;
-        } else if (nextNewMoonFromDay.minusDays((long) 7.5).equals(day)) {
+        } else if (nextNewMoonFromDay.minusDays((long) 7).equals(day)) {
             phase = Phase.THIRD_QUARTER;
-        } else if (nextNewMoonFromDay.minusDays(15).equals(day)) {
+        } else if (nextNewMoonFromDay.minusDays((long) 15).equals(day)) {
             phase = Phase.FULL_MOON;
-        } else if (nextNewMoonFromDay.minusDays((long) 22.5).equals(day)) {
+        } else if (nextNewMoonFromDay.minusDays((long) 23).equals(day)) {
             phase = Phase.FIRST_QUARTER;
-        } else if (day.isAfter(nextNewMoonFromDay.minusDays((long) 7.5))) {
+        } else if (day.isAfter(ChronoLocalDateTime.from(nextNewMoonFromDay.minusDays((long) 7.375)))) {
             phase = Phase.WANING_CRESCENT;
-        } else if (day.isAfter(nextNewMoonFromDay.minusDays(15))) {
+        } else if (day.isAfter(ChronoLocalDateTime.from(nextNewMoonFromDay.minusDays((long) 14.75)))) {
             phase = Phase.WANING_GIBBOUS;
-        } else if (day.isAfter(nextNewMoonFromDay.minusDays((long) 22.5))) {
+        } else if (day.isAfter(ChronoLocalDateTime.from(nextNewMoonFromDay.minusDays((long) 22.5)))) {
             phase = Phase.WAXING_GIBBOUS;
-        } else if (day.isAfter(nextNewMoonFromDay.minusDays((long) 29.5))) {
+        } else if (day.isAfter(ChronoLocalDateTime.from(nextNewMoonFromDay.minusDays((long) 29.5)))) {
             phase = Phase.WAXING_CRESCENT;
         }
         return phase;
     }
-    private String phaseToString(Phase phase) {
+    public String phaseToString(Phase phase) {
         String str = "";
         switch (phase) {
             case NEW_MOON:
@@ -133,15 +135,16 @@ public class MoonPhase {
         }
         return str;
     }
-/*
+
     public static void main(String args[]) {
         MoonPhase next = new MoonPhase();
         System.out.println("Next New Moon is " + next.calculateNextNewMoon().toString());
         System.out.println("Stargazing is good between days: " + next.starGazingRange().toString());
         System.out.println("Stargazing is good between days: " + next.starGazingRange().toString());
-        System.out.println(next.phaseToString(next.whatPhaseIsIt(next.currentDate.plusDays(10))));
+        System.out.println(next.phaseToString(next.whatPhaseIsIt(next.currentDate.plusDays(33))));
+        System.out.println(next.currentDate.plusDays(33));
    }
-*/
+
     public enum Phase {
         NEW_MOON,
         WAXING_CRESCENT,

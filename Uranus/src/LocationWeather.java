@@ -20,7 +20,7 @@ public class LocationWeather {
 
     ArrayList<ForecastData> forecasts;
 
-    LocationWeather() {
+    public LocationWeather() {
         lat = null;
         lng = null;
         latitude = null;
@@ -33,7 +33,7 @@ public class LocationWeather {
      * This should probably be named something else....
      * @param inputLocation
      */
-    LocationWeather(String inputLocation){
+    public LocationWeather(String inputLocation){
         this.location = inputLocation;
 
         try {
@@ -98,6 +98,8 @@ public class LocationWeather {
 
             for(ForecastData forecastData : forecasts) {
                 System.out.println(forecastData.toString());
+                Stargazing gaze = new Stargazing(forecastData);
+                System.out.println(gaze.getGaze());
             }
 
         } catch (Exception e) {
