@@ -24,6 +24,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import ui.DayLabel;
+import ui.WeatherPane;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -142,7 +143,7 @@ public class Main extends Application {
                 new BackgroundFill(Color.ALICEBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 
         checkVisibilityButton.setOnMouseClicked(e -> {
-            // Empty out right-hand panel and get location entry from textfield
+            // Empty  right-hand panel and get location entry from textfield
             forecastGrid.getChildren().clear();
             String location = locationField.getText();
 
@@ -162,8 +163,11 @@ public class Main extends Application {
                     String phaseString = moonPhaseCalculator.phaseToString(moonPhase);
                     Pane moonPhasePane = getMoonPhasePane(moonPhase);
 
+                    WeatherPane weatherPane = new WeatherPane(forecasts.get(i).forecast);
+
                     forecastGrid.add(moonPhasePane, i,0);
                     forecastGrid.add(dayLabel, i, 1);
+                    forecastGrid.add(weatherPane, i, 2);
                 }
             }
         });
