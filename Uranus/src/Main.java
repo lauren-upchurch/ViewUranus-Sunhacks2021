@@ -206,21 +206,38 @@ public class Main extends Application {
         // Set up right-hand pane
         SplitPane rightPane = new SplitPane();
         rightPane.setOrientation(Orientation.VERTICAL);
-        rightPane.setDividerPositions(0.3f, 0.7f);
+        rightPane.setDividerPositions(0.45f, 0.55f);
 
-        Label uLabel = new Label("Ephemeris for Uranus");
-        uLabel.setFont(Font.font("Helvetica", FontWeight.BOLD, 12));
-        UranusTable data = new UranusTable();
-//        Pane bottomPane = new Pane(data.getTable());
+        Label uranusLabel = new Label("Ephemeris for Uranus");
+        uranusLabel.setFont(Font.font("Helvetica", FontWeight.BOLD, 30));
+        uranusLabel.setTextFill(Color.MIDNIGHTBLUE);
+        uranusLabel.setAlignment(Pos.CENTER);
 
-        rightPane.getItems().addAll(forecastGrid, data);
+        UranusTable uranusData = new UranusTable();
+        uranusData.setAlignment(Pos.CENTER);
+
+        Label creditLabel = new Label("Ephemeris data courtesy of Dominic Ford at http://in-the-sky.org");
+        creditLabel.setFont(Font.font("Helvetica", FontWeight.THIN, 10));
+        creditLabel.setTextFill(Color.DIMGREY);
+
+        BorderPane uranusBorderPane = new BorderPane();
+        BorderPane.setAlignment(uranusLabel, Pos.BOTTOM_CENTER);
+        BorderPane.setMargin(uranusLabel, new Insets(20, 0, 0, 0));
+        BorderPane.setAlignment(creditLabel, Pos.BOTTOM_CENTER);
+        BorderPane.setMargin(creditLabel, new Insets(0,0,15,0));
+
+        uranusBorderPane.setTop(uranusLabel);
+        uranusBorderPane.setCenter(uranusData);
+        uranusBorderPane.setBottom(creditLabel);
+
+        rightPane.getItems().addAll(forecastGrid, uranusBorderPane);
 
         // Adding nodes to right-hand panel
         splitPane.getItems().addAll(leftPane, rightPane);
         splitPane.setDividerPositions(0.4f, 0.6f);
 
         // Setting up the scene
-        welcomeScene = new Scene(splitPane, 800, 800);
+        welcomeScene = new Scene(splitPane, 850, 800);
         welcomeScene.getStylesheets().add("src/viewUranusStyles.css");
     }
 
