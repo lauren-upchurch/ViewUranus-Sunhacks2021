@@ -36,6 +36,7 @@ public class Main extends Application {
     private MoonPhase moonPhaseCalculator = new MoonPhase();
     private Scene welcomeScene;
     private GridPane forecastGrid = new GridPane();
+    private Label forecastLabel = new Label();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -147,6 +148,9 @@ public class Main extends Application {
             forecastGrid.getChildren().clear();
             String location = locationField.getText();
 
+            forecastLabel.setText("Visibility forecast for " + location);
+            forecastLabel.setVisible(true);
+
             // Gets weather information for hte given location
             getWeather(location);
 
@@ -197,11 +201,20 @@ public class Main extends Application {
 
         // Create forecast grid for weather/moon info in top-right corner
         forecastGrid.setAlignment(Pos.CENTER);
-        forecastGrid.setVgap(20);
+        forecastGrid.setVgap(15);
         forecastGrid.setHgap(20);
+
+        forecastLabel.setFont(Font.font("Helvetica", FontWeight.THIN, 20));
+        forecastLabel.setTextFill(Color.SLATEGREY);
 
         // Set up left-hand pane
         VBox leftPane = setUpLeftPane();
+
+        BorderPane forecastPane = new BorderPane();
+        BorderPane.setAlignment(forecastLabel, Pos.BOTTOM_CENTER);
+        BorderPane.setMargin(forecastLabel, new Insets(15, 0, 0, 0));
+        forecastPane.setTop(forecastLabel);
+        forecastPane.setCenter(forecastGrid);
 
         // Set up right-hand pane
         SplitPane rightPane = new SplitPane();
@@ -231,7 +244,7 @@ public class Main extends Application {
         uranusBorderPane.setCenter(uranusData);
         uranusBorderPane.setBottom(creditLabel);
 
-        rightPane.getItems().addAll(forecastGrid, uranusBorderPane);
+        rightPane.getItems().addAll(forecastPane, uranusBorderPane);
 
         // Adding nodes to right-hand panel
         splitPane.getItems().addAll(leftPane, rightPane);

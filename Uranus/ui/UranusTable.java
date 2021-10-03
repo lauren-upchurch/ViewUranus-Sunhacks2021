@@ -86,12 +86,12 @@ public class UranusTable extends GridPane {
                 newVBox = new VBox();
                 newStackPane = new StackPane();
                 newStackPane.setAlignment(Pos.BASELINE_CENTER);
-                labels[i].setFont(Font.font("Tahoma", FontWeight.MEDIUM, 15));
+                labels[i].setFont(Font.font("Helvetica", FontWeight.MEDIUM, 15));
                 newStackPane.getChildren().add(labels[i]);
                 newVBox.getChildren().add(newStackPane);
             } else {
                 newStackPane = new StackPane();
-                labels[i].setFont(Font.font("Tahoma", FontWeight.THIN, 11));
+                labels[i].setFont(Font.font("Helvetica", FontWeight.THIN, 11));
                 newStackPane.getChildren().add(labels[i]);
                 newVBox.getChildren().add(newStackPane);
 
@@ -142,7 +142,7 @@ public class UranusTable extends GridPane {
                 }
 
                 dataLabel = new Label(dataToStore);
-                dataLabel.setFont(Font.font("Tahoma", FontWeight.THIN, 12));
+                dataLabel.setFont(Font.font("Helvetica", FontWeight.THIN, 12));
                 stackPane = new StackPane(dataLabel);
                 stackPane.setAlignment(Pos.BASELINE_CENTER);
 
