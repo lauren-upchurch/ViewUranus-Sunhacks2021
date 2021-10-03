@@ -16,7 +16,7 @@ public Gaze starGazingPotential() {
         return Gaze.GREAT;
     } else {
         final boolean isNearlyNew = (phase.equals(MoonPhase.Phase.NEW_MOON)) || (phase.equals(MoonPhase.Phase.WANING_CRESCENT)) || (phase.equals(MoonPhase.Phase.WAXING_CRESCENT));
-        if((forecast.forecast.equalsIgnoreCase("Clear"))&& isNearlyNew) {
+        if((forecast.forecast.equalsIgnoreCase("Clear") || (forecast.forecast.equalsIgnoreCase("Mostly Clear"))) && isNearlyNew) {
             return Gaze.GOOD;
         } else if((forecast.forecast.equalsIgnoreCase("Partly Cloudy")) && isNearlyNew) {
             return Gaze.OK;
