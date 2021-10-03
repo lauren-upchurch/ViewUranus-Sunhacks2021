@@ -5,11 +5,9 @@ package src;
  */
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -21,13 +19,11 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import ui.DayLabel;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -185,7 +181,14 @@ public class Main extends Application {
         // Create top and bottom panes for right-hand panel
 //        Pane topPane = new Pane();
 //        topPane.getChildren().add(forecastGrid);
-        Pane bottomPane = new Pane(new Label("Potentially visible bodies will go in this one"));
+
+        Label uLabel = new Label("Ephemeris for Uranus");
+        uLabel.setFont(Font.font("Helvetica", FontWeight.BOLD, 12));
+        UranusTable data = new UranusTable();
+        Pane bottomPane = new Pane(data.getTable());
+
+
+
         rightPaneVerticalSplit.getItems().addAll(forecastGrid, bottomPane);
 
         // Adding nodes to right-hand panel
