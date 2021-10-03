@@ -61,7 +61,7 @@ public class DayLabel extends Pane {
 
         vBoxLayout.getChildren().addAll(dayLabel, dateLabel, visibilityRating);
         vBoxLayout.setSpacing(1);
-        VBox.setMargin(visibilityRating, new Insets(4, 0, 2, 0));
+        VBox.setMargin(visibilityRating, new Insets(4, 0, 4, 0));
         vBoxLayout.setAlignment(Pos.BASELINE_CENTER);
         vBoxLayout.setVisible(true);
 

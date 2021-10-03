@@ -21,6 +21,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import ui.DayLabel;
+import ui.UranusTable;
 import ui.WeatherPane;
 
 import java.io.FileInputStream;
@@ -210,9 +211,9 @@ public class Main extends Application {
         Label uLabel = new Label("Ephemeris for Uranus");
         uLabel.setFont(Font.font("Helvetica", FontWeight.BOLD, 12));
         UranusTable data = new UranusTable();
-        Pane bottomPane = new Pane(data.getTable());
+//        Pane bottomPane = new Pane(data.getTable());
 
-        rightPane.getItems().addAll(forecastGrid, bottomPane);
+        rightPane.getItems().addAll(forecastGrid, data);
 
         // Adding nodes to right-hand panel
         splitPane.getItems().addAll(leftPane, rightPane);
