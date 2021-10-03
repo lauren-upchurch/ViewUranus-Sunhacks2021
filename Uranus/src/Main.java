@@ -116,26 +116,29 @@ public class Main extends Application {
      * Helper method for setting up lefthand pane.
      * @return Pane object that contains all leftpane sections
      */
-    private BorderPane setUpLeftPane() {
+    private VBox setUpLeftPane() {
 
-        BorderPane borderPane = new BorderPane();
-        Pane topLeftPane = new Pane();
-        Pane bottomLeftPane = new Pane();
+        String logoImageString = "Uranus/images/logo/view-uranus-logo2.png";
+        ImageView logoImageView = new ImageView();
+        logoImageView.setStyle("-fx-alignment: CENTER;");
 
+        try {
+            Image logo = new Image(new FileInputStream(logoImageString));
+            logoImageView.setImage(logo);
+            logoImageView.setFitHeight(140);
+            logoImageView.setPreserveRatio(true);
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        StackPane logoPane = new StackPane(logoImageView);
+        logoPane.setAlignment(Pos.BASELINE_CENTER);
+        
         // Create text field
         TextField locationField = new TextField("City, State");
         locationField.setFont(Font.font("Helvetica", FontWeight.THIN, 14));
         locationField.setPrefColumnCount(40);
         locationField.setMaxWidth(250);
-
-        // Create content labels
-        Label topLabel = new Label("View Uranus");
-        topLabel.setFont(Font.font("Helvetica", FontWeight.EXTRA_LIGHT, 25));
-        topLabel.setTextFill(Color.WHITESMOKE);
-
-        Label subLabel = new Label("(or other stellar phenomena)");
-        subLabel.setFont(Font.font("Helvetica", FontWeight.THIN, 12));
-        subLabel.setTextFill(Color.WHITESMOKE);
 
         // Create button for sending textfield data to backend
         Button checkVisibilityButton = new Button("Check visibility");
@@ -175,36 +178,16 @@ public class Main extends Application {
         });
 
         // Create VBox and layout parameters for storing GUI elements in left-hand panel
-        VBox topLeftVBox = new VBox(5, topLabel, subLabel, locationField, checkVisibilityButton);
-        VBox.setMargin(topLabel, new Insets(30,0,0,0));
+        VBox leftVBox = new VBox(5, logoPane, locationField, checkVisibilityButton);
+        VBox.setMargin(logoPane, new Insets(20,0,0,0));
         VBox.setMargin(checkVisibilityButton, new Insets(15, 0, 0, 0));
         VBox.setVgrow(locationField, Priority.NEVER);
-        topLeftVBox.setAlignment(Pos.BASELINE_CENTER);
-//
-//        topLeftPane.setBackground(new Background(
-//                new BackgroundFill(Color.rgb(23, 59, 95), CornerRadii.EMPTY, Insets.EMPTY)));
-        topLeftPane.getChildren().add(topLeftVBox);
+        leftVBox.setAlignment(Pos.BASELINE_CENTER);
 
-        String logoImageString = "Uranus/images/logo/view-uranus-logo.png";
-
-        ImageView logoImageView = new ImageView();
-
-        try {
-            Image logo = new Image(new FileInputStream(logoImageString));
-            logoImageView.setImage(logo);
-            logoImageView.setFitHeight(100);
-            logoImageView.setPreserveRatio(true);
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        }
-
-        borderPane.setBackground(new Background(
+        leftVBox.setBackground(new Background(
                 new BackgroundFill(Color.rgb(23, 59, 95), CornerRadii.EMPTY, Insets.EMPTY)));
-        BorderPane.setAlignment(topLeftPane, Pos.CENTER);
-        borderPane.setBottom(logoImageView);
-        borderPane.setTop(topLeftPane);
 
-        return borderPane;
+        return leftVBox;
     }
 
     /**
@@ -219,7 +202,7 @@ public class Main extends Application {
         forecastGrid.setHgap(20);
 
         // Set up left-hand pane
-        BorderPane leftPane = setUpLeftPane();
+        VBox leftPane = setUpLeftPane();
 
         // Set up right-hand pane
         SplitPane rightPane = new SplitPane();
