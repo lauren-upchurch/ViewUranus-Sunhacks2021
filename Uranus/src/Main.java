@@ -36,8 +36,9 @@ public class Main extends Application {
 
     private LocationWeather weather;
     private ArrayList<ForecastData> forecasts;
-    private Scene welcomeScene;
     private MoonPhase moonPhaseCalculator = new MoonPhase();
+    private Scene welcomeScene;
+    private GridPane forecastGrid = new GridPane();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -112,14 +113,14 @@ public class Main extends Application {
     }
 
     /**
-     * Helper method that sets up the StartScreen (NOTE: button functionality is included in this).
+     * Helper method for setting up lefthand pane.
+     * @return Pane object that contains all leftpane sections
      */
-    private void setUpStartScreen(){
-        SplitPane splitPane = new SplitPane();
-        GridPane forecastGrid = new GridPane();
-        forecastGrid.setAlignment(Pos.CENTER);
-        forecastGrid.setVgap(20);
-        forecastGrid.setHgap(20);
+    private BorderPane setUpLeftPane() {
+
+        BorderPane borderPane = new BorderPane();
+        Pane topLeftPane = new Pane();
+        Pane bottomLeftPane = new Pane();
 
         // Create text field
         TextField locationField = new TextField("City, State");
@@ -142,6 +143,7 @@ public class Main extends Application {
         checkVisibilityButton.setBackground(new Background(
                 new BackgroundFill(Color.ALICEBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 
+        // Setting button functionality
         checkVisibilityButton.setOnMouseClicked(e -> {
             // Empty  right-hand panel and get location entry from textfield
             forecastGrid.getChildren().clear();
@@ -173,27 +175,62 @@ public class Main extends Application {
         });
 
         // Create VBox and layout parameters for storing GUI elements in left-hand panel
-        VBox leftPane = new VBox(5, topLabel, subLabel, locationField, checkVisibilityButton);
+        VBox topLeftVBox = new VBox(5, topLabel, subLabel, locationField, checkVisibilityButton);
         VBox.setMargin(topLabel, new Insets(30,0,0,0));
         VBox.setMargin(checkVisibilityButton, new Insets(15, 0, 0, 0));
         VBox.setVgrow(locationField, Priority.NEVER);
-        leftPane.setAlignment(Pos.BASELINE_CENTER);
-        leftPane.setBackground(new Background(
+        topLeftVBox.setAlignment(Pos.BASELINE_CENTER);
+//
+//        topLeftPane.setBackground(new Background(
+//                new BackgroundFill(Color.rgb(23, 59, 95), CornerRadii.EMPTY, Insets.EMPTY)));
+        topLeftPane.getChildren().add(topLeftVBox);
+
+        String logoImageString = "Uranus/images/logo/view-uranus-logo.png";
+
+        ImageView logoImageView = new ImageView();
+
+        try {
+            Image logo = new Image(new FileInputStream(logoImageString));
+            logoImageView.setImage(logo);
+            logoImageView.setFitHeight(100);
+            logoImageView.setPreserveRatio(true);
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        borderPane.setBackground(new Background(
                 new BackgroundFill(Color.rgb(23, 59, 95), CornerRadii.EMPTY, Insets.EMPTY)));
+        BorderPane.setAlignment(topLeftPane, Pos.CENTER);
+        borderPane.setBottom(logoImageView);
+        borderPane.setTop(topLeftPane);
 
-        // Create vertical split pane for right-hand panel
-        SplitPane rightPaneVerticalSplit = new SplitPane();
-        rightPaneVerticalSplit.setOrientation(Orientation.VERTICAL);
-        rightPaneVerticalSplit.setDividerPositions(0.3f, 0.7f);
+        return borderPane;
+    }
 
-        // Create top and bottom panes for right-hand panel
-//        Pane topPane = new Pane();
-//        topPane.getChildren().add(forecastGrid);
+    /**
+     * Helper method that sets up the StartScreen (NOTE: button functionality is included in this).
+     */
+    private void setUpStartScreen(){
+        SplitPane splitPane = new SplitPane();
+
+        // Create forecast grid for weather/moon info in top-right corner
+        forecastGrid.setAlignment(Pos.CENTER);
+        forecastGrid.setVgap(20);
+        forecastGrid.setHgap(20);
+
+        // Set up left-hand pane
+        BorderPane leftPane = setUpLeftPane();
+
+        // Set up right-hand pane
+        SplitPane rightPane = new SplitPane();
+        rightPane.setOrientation(Orientation.VERTICAL);
+        rightPane.setDividerPositions(0.3f, 0.7f);
+
         Pane bottomPane = new Pane(new Label("Potentially visible bodies will go in this one"));
-        rightPaneVerticalSplit.getItems().addAll(forecastGrid, bottomPane);
+        rightPane.getItems().addAll(forecastGrid, bottomPane);
 
         // Adding nodes to right-hand panel
-        splitPane.getItems().addAll(leftPane, rightPaneVerticalSplit);
+        splitPane.getItems().addAll(leftPane, rightPane);
         splitPane.setDividerPositions(0.4f, 0.6f);
 
         // Setting up the scene
