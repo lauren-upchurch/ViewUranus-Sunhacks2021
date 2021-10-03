@@ -210,8 +210,11 @@ public class Main extends Application {
 
         Label uranusLabel = new Label("Ephemeris for Uranus");
         uranusLabel.setFont(Font.font("Helvetica", FontWeight.BOLD, 30));
-        uranusLabel.setTextFill(Color.MIDNIGHTBLUE);
+        uranusLabel.setTextFill(Color.WHITESMOKE);
         uranusLabel.setAlignment(Pos.CENTER);
+        StackPane labelStackPane = new StackPane(uranusLabel);
+        labelStackPane.setBackground(new Background(
+                new BackgroundFill(Color.SLATEGREY, CornerRadii.EMPTY, Insets.EMPTY)));
 
         UranusTable uranusData = new UranusTable();
         uranusData.setAlignment(Pos.CENTER);
@@ -221,12 +224,10 @@ public class Main extends Application {
         creditLabel.setTextFill(Color.DIMGREY);
 
         BorderPane uranusBorderPane = new BorderPane();
-        BorderPane.setAlignment(uranusLabel, Pos.BOTTOM_CENTER);
-        BorderPane.setMargin(uranusLabel, new Insets(20, 0, 0, 0));
         BorderPane.setAlignment(creditLabel, Pos.BOTTOM_CENTER);
         BorderPane.setMargin(creditLabel, new Insets(0,0,15,0));
 
-        uranusBorderPane.setTop(uranusLabel);
+        uranusBorderPane.setTop(labelStackPane);
         uranusBorderPane.setCenter(uranusData);
         uranusBorderPane.setBottom(creditLabel);
 
